@@ -3,11 +3,18 @@ mod signatory;
 mod transaction;
 
 fn main() -> anyhow::Result<()> {
-    let license_contents = transaction::read_license("MIT")?;
+    let license_contents = transaction::read_license("GPLv3")?;
 
     let license_fields = signatory::LicenseFields {
         year: Some(2026),
         fullname: Some("Rudolf Muller"),
+        title: Some("license - license signatory"),
+        contacts: Some(vec![
+            "rust@example.xyz",
+            "rust@example.xyz",
+            "rust@example.xyz",
+        ]),
+        program: Some("license"),
     };
     let signed_license = signatory::sign(license_contents, license_fields);
 
