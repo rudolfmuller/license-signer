@@ -44,10 +44,10 @@ fn main() -> anyhow::Result<()> {
             let license_contents = transaction::read_license(&r#type)?;
             license_fields = signatory::LicenseFields {
                 year: year,
-                fullname: owner.as_deref(),
-                title: title.as_deref(),
+                fullname: owner,
+                title: title,
                 contacts: contact,
-                program: program.as_deref(),
+                program: program,
             };
             let signed_license = signatory::sign(license_contents, license_fields);
             println!("{}", signed_license);
