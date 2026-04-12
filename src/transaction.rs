@@ -1,5 +1,6 @@
-use std::env::current_dir;
 // TODO: license download licensespack.lic.tar.gz
+use colored_text::Colorize;
+use std::env::current_dir;
 use std::fs;
 use std::io;
 use thiserror::Error;
@@ -27,7 +28,20 @@ pub fn read_license(kind: &str) -> Result<String, TransactionError> {
 }
 
 pub fn create_license(license: &str) -> Result<(), TransactionError> {
-    let out_dir = current_dir()?;
-    fs::write(out_dir.join("LICENSE"), license)?;
+    let out_path = current_dir()?.join("LICENSE");
+    if !out_path.exists() {
+        fs::write(&out_path, license)?;
+        eprintln!(
+            "{}: license was successfully created (in '{}')",
+            "info".green().bold(),
+            out_path.display().magenta()
+        );
+    } else {
+        eprintln!(
+            "{}: path '{}' already exists",
+            "warn".yellow().bold(),
+            out_path.display().magenta()
+        );
+    }
     Ok(())
 }

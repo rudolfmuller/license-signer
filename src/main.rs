@@ -1,7 +1,6 @@
 // TODO: license gen -t MIT --year=2026 --owner="Rudolf Muller"
 use clap::{Parser, Subcommand};
 
-use crate::signatory::LicenseFields;
 mod signatory;
 mod transaction;
 
