@@ -1,5 +1,5 @@
 [package]
-name = "license-gen"
+name = "license-signer"
 version = "0.1.0"
 edition = "2021"
 description = "CLI License Generator written in Rust"
