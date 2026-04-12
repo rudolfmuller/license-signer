@@ -4,7 +4,7 @@ pub struct LicenseFields<'a> {
     pub year: Option<i32>,
     pub fullname: Option<&'a str>,
     pub title: Option<&'a str>,
-    pub contacts: Option<Vec<&'a str>>,
+    pub contacts: Option<Vec<String>>,
     pub program: Option<&'a str>,
 }
 
