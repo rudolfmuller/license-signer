@@ -7,7 +7,7 @@ mod transaction;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-struct Args {
+struct Arguments {
     #[command(subcommand)]
     event: Event,
 }
@@ -30,8 +30,7 @@ enum Event {
 }
 
 fn main() -> anyhow::Result<()> {
-    let args = Args::parse();
-    let license_fields: LicenseFields;
+    let args = Arguments::parse();
     match args.event {
         Event::Gen {
             r#type,
@@ -42,7 +41,7 @@ fn main() -> anyhow::Result<()> {
             program,
         } => {
             let license_contents = transaction::read_license(&r#type)?;
-            license_fields = signatory::LicenseFields {
+            let license_fields = signatory::LicenseFields {
                 year: year,
                 fullname: owner,
                 title: title,
@@ -51,6 +50,7 @@ fn main() -> anyhow::Result<()> {
             };
             let signed_license = signatory::sign(license_contents, license_fields);
             println!("{}", signed_license);
+            transaction::create_license(&signed_license)?;
         }
     };
 

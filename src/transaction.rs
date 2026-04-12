@@ -1,3 +1,4 @@
+use std::env::current_dir;
 // TODO: license download licensespack.lic.tar.gz
 use std::fs;
 use std::io;
@@ -23,4 +24,10 @@ pub fn read_license(kind: &str) -> Result<String, TransactionError> {
     let license_contents: String = fs::read_to_string(&license_path)?;
 
     Ok(license_contents)
+}
+
+pub fn create_license(license: &str) -> Result<(), TransactionError> {
+    let out_dir = current_dir()?;
+    fs::write(out_dir.join("LICENSE"), license)?;
+    Ok(())
 }
