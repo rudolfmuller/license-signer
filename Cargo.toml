@@ -1,7 +1,13 @@
 [package]
-name = "license"
+name = "license-gen"
 version = "0.1.0"
-edition = "2024"
+edition = "2021"
+description = "CLI License Generator written in Rust"
+license = "MIT"
+repository = "https://github.com/rudolfmuller/license-gen.git"
+readme = "README.md"
+keywords = ["cli", "license", "rust"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 thiserror = "2.0.18"

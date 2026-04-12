@@ -266,7 +266,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "license"
+name = "license-gen"
 version = "0.1.0"
 dependencies = [
  "anyhow",
