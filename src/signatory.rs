@@ -12,15 +12,21 @@ pub fn sign(mut paper: String, lf: LicenseFields) -> String {
     // WARN: THIS IS WRONG; IT ALLOCATES STRINGS UNNECESSARILY, maybe I'll check it out next time
     let now = Local::now().year();
     paper = paper.replace("[year]", &lf.year.unwrap_or(now).to_string());
-    paper = paper.replace("[fullname]", lf.fullname.as_deref().unwrap_or("[OWNER!]"));
-    paper = paper.replace("[title]", lf.title.as_deref().unwrap_or("[TITLE!]"));
+    paper = paper.replace(
+        "[owner]",
+        lf.fullname.as_deref().unwrap_or("[FORGOT: owner]"),
+    );
+    paper = paper.replace("[title]", lf.title.as_deref().unwrap_or("[FORGOT: title`"));
     paper = paper.replace(
         "[contacts]",
         &lf.contacts
             .as_deref()
             .map(|v| v.join(", "))
-            .unwrap_or_else(|| "[CONTACTS!]".to_string()),
+            .unwrap_or_else(|| "[FORGOT: contacts]".to_string()),
     );
-    paper = paper.replace("[program]", lf.program.as_deref().unwrap_or("[PROGRAM!]"));
+    paper = paper.replace(
+        "[program]",
+        lf.program.as_deref().unwrap_or("[FORGOT: program]"),
+    );
     paper
 }
