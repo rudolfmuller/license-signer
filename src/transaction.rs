@@ -35,20 +35,20 @@ pub fn read_license(kind: &str) -> Result<String, TransactionError> {
 
 pub fn create_license(license: &str) -> Result<(), TransactionError> {
     let out_path = current_dir()?.join("LICENSE");
-    if !out_path.exists() {
-        fs::write(&out_path, license)?;
-        eprintln!(
-            "{}: license was successfully created (in '{}')",
-            "info".green().bold(),
-            out_path.display().magenta()
-        );
-    } else {
+    if out_path.exists() {
         eprintln!(
             "{}: path '{}' already exists",
             "warn".yellow().bold(),
             out_path.display().magenta()
         );
+        return Ok(());
     }
+    fs::write(&out_path, license).map_err(|e| TransactionError::IoError(e))?;
+    eprintln!(
+        "{}: license was successfully created (in '{}')",
+        "info".green().bold(),
+        out_path.display().magenta()
+    );
     Ok(())
 }
 
