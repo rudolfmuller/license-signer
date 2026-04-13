@@ -1,4 +1,5 @@
-// TODO: license gen -t MIT --year=2026 --owner="Rudolf Muller"
+use std::path::PathBuf;
+
 use clap::{Parser, Subcommand};
 
 mod signatory;
@@ -26,8 +27,11 @@ enum Event {
         #[arg(long)]
         program: Option<String>,
     },
+    Add {
+        license_path: PathBuf,
+    },
 }
-
+// TODO: license gen -t MIT --year=2026 --owner="Rudolf Muller"
 fn main() -> anyhow::Result<()> {
     let args = Arguments::parse();
     match args.event {
@@ -50,6 +54,9 @@ fn main() -> anyhow::Result<()> {
             let signed_license = signatory::sign(license_contents, license_fields);
             println!("{}", signed_license);
             transaction::create_license(&signed_license)?;
+        }
+        Event::Add { license_path } => {
+            transaction::add_license(license_path)?;
         }
     };
 

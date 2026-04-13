@@ -11,17 +11,18 @@ const LICENSE_SUFFIX: &str = ".lic";
 
 #[derive(Error, Debug)]
 pub enum TransactionError {
-    #[error("failed to read license file")]
-    ReadError(#[from] io::Error),
+    #[error("failed to access filesystem")]
+    IoError(#[from] io::Error),
     #[error("failed to open directory")]
     DirectoryError,
+    #[error("failed to access path")]
+    InvalidPath,
 }
 
 fn license_space_dir() -> Result<PathBuf, TransactionError> {
     let license_space_dir = dirs::data_dir()
         .ok_or(TransactionError::DirectoryError)?
         .join(LICENSE_SPACE);
-    dbg!(&license_space_dir);
     Ok(license_space_dir)
 }
 
@@ -48,5 +49,27 @@ pub fn create_license(license: &str) -> Result<(), TransactionError> {
             out_path.display().magenta()
         );
     }
+    Ok(())
+}
+
+pub fn add_license(paper_path: PathBuf) -> Result<(), TransactionError> {
+    let file_name = paper_path
+        .file_name()
+        .ok_or(TransactionError::InvalidPath)?;
+    let out_path = license_space_dir()?.join(file_name);
+    if out_path.exists() {
+        eprintln!(
+            "{}: path '{}' is already added",
+            "warn".yellow().bold(),
+            out_path.display().magenta()
+        );
+        return Ok(());
+    }
+    fs::copy(&paper_path, &out_path).map_err(|e| TransactionError::IoError(e))?;
+    eprintln!(
+        "{}: license was successfully added (in '{}')",
+        "info".green().bold(),
+        out_path.display().magenta()
+    );
     Ok(())
 }
