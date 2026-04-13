@@ -5,7 +5,7 @@ mod signatory;
 mod transaction;
 
 #[derive(Parser, Debug)]
-#[command(name = "license", version, about, long_about = None)]
+#[command(version, about, long_about = None)]
 struct Arguments {
     #[command(subcommand)]
     event: Event,

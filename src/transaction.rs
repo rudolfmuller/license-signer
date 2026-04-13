@@ -3,6 +3,7 @@ use colored_text::Colorize;
 use std::env::current_dir;
 use std::fs;
 use std::io;
+use std::path::PathBuf;
 use thiserror::Error;
 
 const LICENSE_SPACE: &str = "license-space";
@@ -16,12 +17,16 @@ pub enum TransactionError {
     DirectoryError,
 }
 
+fn license_space_dir() -> Result<PathBuf, TransactionError> {
+    let license_space_dir = dirs::data_dir()
+        .ok_or(TransactionError::DirectoryError)?
+        .join(LICENSE_SPACE);
+    dbg!(&license_space_dir);
+    Ok(license_space_dir)
+}
+
 pub fn read_license(kind: &str) -> Result<String, TransactionError> {
-    let share_dir = dirs::data_dir().ok_or(TransactionError::DirectoryError)?;
-    let license_path = share_dir
-        .join(LICENSE_SPACE)
-        .join(format!("{}{}", kind, LICENSE_SUFFIX));
-    dbg!(&license_path);
+    let license_path = license_space_dir()?.join(format!("{}{}", kind, LICENSE_SUFFIX));
     let license_contents: String = fs::read_to_string(&license_path)?;
 
     Ok(license_contents)
