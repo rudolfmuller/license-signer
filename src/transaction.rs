@@ -37,7 +37,7 @@ pub fn create_license(license: &str) -> Result<(), TransactionError> {
     let out_path = current_dir()?.join("LICENSE");
     if out_path.exists() {
         eprintln!(
-            "{}: path '{}' already exists",
+            "{}: path '{}' already exists, skipping creation",
             "warn".yellow().bold(),
             out_path.display().magenta()
         );
@@ -59,7 +59,7 @@ pub fn add_license(paper_path: PathBuf) -> Result<(), TransactionError> {
     let out_path = license_space_dir()?.join(file_name);
     if out_path.exists() {
         eprintln!(
-            "{}: path '{}' is already added",
+            "{}: path '{}' is already added, skipping creation",
             "warn".yellow().bold(),
             out_path.display().magenta()
         );
