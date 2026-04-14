@@ -16,6 +16,7 @@ Install: `$ cargo install license-signer`
 <br><br>
 <b>HOW TO USE:</b><br>
 Add a new license: `$ license-signer add ./MIT.lic`<br>
+Remove the license: `$ license-signer remove MIT`<br>
 Generate the license: `$ license-signer gen -t MIT --owner="Rudolf Muller"`.
 
 
