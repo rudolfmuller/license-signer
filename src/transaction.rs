@@ -3,7 +3,7 @@ use colored_text::Colorize;
 use std::env::current_dir;
 use std::fs;
 use std::io;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use thiserror::Error;
 
 const LICENSE_SPACE: &str = "license-space";
@@ -24,6 +24,13 @@ fn license_space_dir() -> Result<PathBuf, TransactionError> {
         .ok_or(TransactionError::DirectoryError)?
         .join(LICENSE_SPACE);
     Ok(license_space_dir)
+}
+
+fn validate_license_path(path: &Path) -> Result<(), TransactionError> {
+    if path.extension().and_then(|e| e.to_str()) != Some(LICENSE_SUFFIX) {
+        return Err(TransactionError::InvalidPath);
+    }
+    Ok(())
 }
 
 pub fn read_license(kind: &str) -> Result<String, TransactionError> {
@@ -53,18 +60,17 @@ pub fn create_license(license: &str) -> Result<(), TransactionError> {
 }
 
 pub fn add_license(paper_path: PathBuf) -> Result<(), TransactionError> {
-    if paper_path.extension().and_then(|e| e.to_str()) != Some(LICENSE_SUFFIX) {
+    if let Err(TransactionError::InvalidPath) = validate_license_path(&paper_path) {
         eprintln!(
             "{}: path '{}' is not valid, skipping creation",
             "warn".yellow().bold(),
             paper_path.display().magenta()
         );
         eprintln!(
-            "{}: try check the file extension (file name must end with '{}')",
+            "{}: try check the file extension (file name must end with '{}'!)",
             "hint".yellow(),
             LICENSE_SUFFIX.magenta()
         );
-
         return Ok(());
     }
     let file_name = paper_path
