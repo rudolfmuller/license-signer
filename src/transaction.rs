@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use thiserror::Error;
 
 const LICENSE_SPACE: &str = "license-space";
-const LICENSE_SUFFIX: &str = ".lic";
+const LICENSE_SUFFIX: &str = "lic";
 
 #[derive(Error, Debug)]
 pub enum TransactionError {
@@ -27,7 +27,7 @@ fn license_space_dir() -> Result<PathBuf, TransactionError> {
 }
 
 pub fn read_license(kind: &str) -> Result<String, TransactionError> {
-    let license_path = license_space_dir()?.join(format!("{}{}", kind, LICENSE_SUFFIX));
+    let license_path = license_space_dir()?.join(format!("{}.{}", kind, LICENSE_SUFFIX));
     let license_contents: String = fs::read_to_string(&license_path)?;
 
     Ok(license_contents)
@@ -53,6 +53,20 @@ pub fn create_license(license: &str) -> Result<(), TransactionError> {
 }
 
 pub fn add_license(paper_path: PathBuf) -> Result<(), TransactionError> {
+    if paper_path.extension().and_then(|e| e.to_str()) != Some(LICENSE_SUFFIX) {
+        eprintln!(
+            "{}: path '{}' is not valid, skipping creation",
+            "warn".yellow().bold(),
+            paper_path.display().magenta()
+        );
+        eprintln!(
+            "{}: try check the file extension (file name must end with '{}')",
+            "hint".yellow(),
+            LICENSE_SUFFIX.magenta()
+        );
+
+        return Ok(());
+    }
     let file_name = paper_path
         .file_name()
         .ok_or(TransactionError::InvalidPath)?;
@@ -75,7 +89,7 @@ pub fn add_license(paper_path: PathBuf) -> Result<(), TransactionError> {
 }
 
 pub fn remove_license(license: &str) -> Result<(), TransactionError> {
-    let final_path = license_space_dir()?.join(format!("{}{}", license, LICENSE_SUFFIX));
+    let final_path = license_space_dir()?.join(format!("{}.{}", license, LICENSE_SUFFIX));
     if !final_path.exists() {
         eprintln!(
             "{}: license '{}' is not added, skipping removing",
