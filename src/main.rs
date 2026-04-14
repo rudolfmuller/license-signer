@@ -30,6 +30,9 @@ enum Event {
     Add {
         license_path: PathBuf,
     },
+    Remove {
+        license: String,
+    },
 }
 // TODO: license gen -t MIT --year=2026 --owner="Rudolf Muller"
 fn main() -> anyhow::Result<()> {
@@ -57,6 +60,9 @@ fn main() -> anyhow::Result<()> {
         }
         Event::Add { license_path } => {
             transaction::add_license(license_path)?;
+        }
+        Event::Remove { license } => {
+            transaction::remove_license(license.as_str())?;
         }
     };
 

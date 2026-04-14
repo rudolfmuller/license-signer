@@ -73,3 +73,22 @@ pub fn add_license(paper_path: PathBuf) -> Result<(), TransactionError> {
     );
     Ok(())
 }
+
+pub fn remove_license(license: &str) -> Result<(), TransactionError> {
+    let final_path = license_space_dir()?.join(format!("{}{}", license, LICENSE_SUFFIX));
+    if !final_path.exists() {
+        eprintln!(
+            "{}: license '{}' is not added, skipping removing",
+            "warn".yellow().bold(),
+            final_path.display().magenta()
+        );
+        return Ok(());
+    }
+    fs::remove_file(&final_path).map_err(|e| TransactionError::IoError(e))?;
+    eprintln!(
+        "{}: license was successfully removed (from '{}')",
+        "info".green().bold(),
+        final_path.display().magenta()
+    );
+    Ok(())
+}
