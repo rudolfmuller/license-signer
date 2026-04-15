@@ -1,6 +1,7 @@
 // TODO: license download licensespack.lic.tar.gz
 use colored_text::Colorize;
 use std::env::current_dir;
+use std::ffi::OsStr;
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -110,5 +111,19 @@ pub fn remove_license(license: &str) -> Result<(), TransactionError> {
         "info".green().bold(),
         final_path.display().magenta()
     );
+    Ok(())
+}
+
+pub fn list_license() -> Result<(), TransactionError> {
+    println!("{}: list of licenses: ", "info".green().bold(),);
+    let entries = fs::read_dir(license_space_dir()?)?;
+    for entry_res in entries {
+        let entry = entry_res?;
+        let path = entry.path();
+        let stem_os = path.file_stem().ok_or(TransactionError::InvalidPath)?;
+        let stem = stem_os.to_str().ok_or(TransactionError::InvalidPath)?;
+        println!(" - {}", stem);
+    }
+
     Ok(())
 }

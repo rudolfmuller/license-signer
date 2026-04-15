@@ -33,6 +33,7 @@ enum Event {
     Remove {
         license: String,
     },
+    Ls,
 }
 // TODO: license gen -t MIT --year=2026 --owner="Rudolf Muller"
 fn main() -> anyhow::Result<()> {
@@ -63,6 +64,9 @@ fn main() -> anyhow::Result<()> {
         }
         Event::Remove { license } => {
             transaction::remove_license(license.as_str())?;
+        }
+        Event::Ls => {
+            transaction::list_license()?;
         }
     };
 
